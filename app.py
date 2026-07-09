@@ -7,6 +7,8 @@ def home():
     # ส่งหน้า index.html ออกไปแสดงผล
     return send_from_directory('.', 'index.html')
 
+import os
+
 if __name__ == '__main__':
-    print("🚀 Server running at http://localhost:5000")
-    app.run(port=5000, debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
