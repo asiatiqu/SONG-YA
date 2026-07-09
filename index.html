@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SONG-YA | ค้นหาและตรวจสอบข้อมูลยา</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- แถบเตือนภัยด้านบนสุด (Warning Banner) -->
+    <div class="warning-banner" id="warningBanner">
+        <svg class="warning-icon" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span>คำเตือน: โปรดใช้ยาอย่างระมัดระวัง ควรปรึกษาแพทย์หรือเภสัชกรก่อนใช้ยา</span>
+    </div>
+    <div class="container">
+        <!-- ส่วนหัวเว็บ/โลโก้ (Header) -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="pill-logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <!-- Pill Shape -->
+                        <path d="M10.5 3a5.5 5.5 0 0 0-7.78 7.78l8.48 8.49a5.5 5.5 0 0 0 7.78-7.78l-8.48-8.49Z" />
+                        <line x1="8.5" y1="15.5" x2="15.5" y2="8.5" />
+                    </svg>
+                </div>
+                <h1 class="logo-text">SONG-<span class="logo-highlight">YA</span></h1>
+            </div>
+            <p class="logo-subtext">ค้นหาข้อมูลยาที่เชื่อถือได้</p>
+        </header>
+        <!-- ส่วนค้นหายา (Search Hub) -->
+        <main class="search-hub">
+            <h2 class="hub-title">ค้นหายาของคุณ</h2>
+            <p class="hub-subtitle">ค้นหาตามชื่อยา หรือถ่ายรูปเม็ดยาเพื่อระบุ</p>
+            <div class="search-form-container">
+                <!-- กล่องข้อความค้นหา -->
+                <div class="search-input-wrapper">
+                    <svg class="input-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <circle cx="11" cy="11" r="8"/>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                    </svg>
+                    <input type="text" id="searchInput" placeholder="กรอกชื่อยา..." autocomplete="off">
+                    <button class="clear-btn" id="clearBtn" aria-label="Clear search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"/>
+                            <line x1="6" y1="6" x2="18" y2="18"/>
+                        </svg>
+                    </button>
+                </div>
+                <!-- ปุ่มการดำเนินการ -->
+                <div class="actions-wrapper">
+                    <button class="btn btn-search" id="searchBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon">
+                            <circle cx="11" cy="11" r="8"/>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                        </svg>
+                        ค้นหา
+                    </button>
+                    <button class="btn btn-camera" id="cameraBtn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon">
+                            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+                            <circle cx="12" cy="13" r="4"/>
+                        </svg>
+                        ถ่ายรูปยา
+                    </button>
+                </div>
+            </div>
+            <!-- ส่วนแสดงผลการค้นหายา -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <!-- ผลลัพธ์จะถูกแทรกเข้ามาผ่าน Javascript -->
+            </section>
+        </main>
+        <!-- ฟุตเตอร์ (Footer) -->
+        <footer class="app-footer">
+            <p>ข้อมูลที่เชื่อถือได้</p>
+        </footer>
+    </div>
+    <!-- โมดอลสำหรับการถ่ายภาพผ่านกล้อง (Camera Modal) -->
+    <div class="modal-overlay" id="cameraModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>ถ่ายรูปเม็ดยาเพื่อวิเคราะห์</h3>
+                <button class="close-modal-btn" id="closeModalBtn" aria-label="Close modal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="camera-viewport-container">
+                <!-- หน้าจอวิดีโอจากกล้องจริง -->
+                <video id="cameraVideo" autoplay playsinline muted></video>
+                
+                <!-- เส้นสแกนจำลองสำหรับความสวยงาม -->
+                <div class="scanner-laser" id="scannerLaser"></div>
+                <div class="scanner-frame">
+                    <div class="corner top-left"></div>
+                    <div class="corner top-right"></div>
+                    <div class="corner bottom-left"></div>
+                    <div class="corner bottom-right"></div>
+                </div>
+                <!-- หน้าต่างอนิเมชันการวิเคราะห์ยา (Scanning Screen Overlay) -->
+                <div class="scanning-status-overlay" id="scanningOverlay">
+                    <div class="spinner"></div>
+                    <p class="scanning-text">กำลังวิเคราะห์ส่วนผสมของยา...</p>
+                </div>
+                <!-- ป้ายแสดงข้อผิดพลาดเมื่อเข้าถึงกล้องไม่ได้ -->
+                <div class="camera-error-message" id="cameraErrorMessage">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                    <p>ไม่สามารถเปิดกล้องของคุณได้ โปรดตรวจสอบสิทธิ์การเข้าใช้งานกล้อง</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-capture" id="captureBtn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="btn-icon">
+                        <circle cx="12" cy="12" r="10"/>
+                        <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    ถ่ายภาพ
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- แคนวาสลับสำหรับใช้บันทึกภาพถ่าย (Hidden Canvas for Capturing Picture) -->
+    <canvas id="captureCanvas" style="display: none;"></canvas>
+    <script src="app.js"></script>
+</body>
+</html>
